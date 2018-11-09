@@ -41,15 +41,12 @@ original = DECOMPOSITION
 tape = q0 + original
 count = 0
 while not is_solved and not is_chomsky_dead:
-    print('--------------')
     print(tape)
     transition = re.findall(r'.*\{(.*)\}(.).*', tape)
     current_state = transition[0][0]
     reading_symbol = transition[0][1]
     current_transition = current_state + ',' + reading_symbol
 
-    print ([current_transition])
-    print (M[current_transition])
     replacement = M[current_transition].split(',')
     next_state = '{' + replacement[0] +'}'
     write = replacement[1]
@@ -69,7 +66,6 @@ while not is_solved and not is_chomsky_dead:
         L = tape[:index_end_left] + write + next_state
     else:
         L = tape[:index_end_left - 1]
-        R = next_state + write + tape[index_init_right:]
+        R = next_state+ tape[index_end_left - 1] + write + tape[index_init_right + 1:]
         
     tape = L + R
-    print(tape, L, R)
