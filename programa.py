@@ -7,7 +7,7 @@ from collections import defaultdict
 
 Q (Lista de estados)                    = STATES
 Σ (Alfabeto)                            = ALPHABET
-Γ (Alfabeto da fita (Σ ∪ B))            = TAPE_ALFABET
+Γ (Alfabeto da fita (Σ ∪ B))            = TAPE_ALPHABET
 δ (Dicionário de funções de transição)¹ = DELTA
 q0 (Estado inicial)                     = q0
 
