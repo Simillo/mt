@@ -17,7 +17,7 @@ const data =
         .map(match => `"${match.trim()}"`)
         .join(',') + ']')
         
-  .replace(/\((.*?)\)\s*?->\s*?\((.*?)\)(,?)/g,
+  .replace(/\((.*?)\)\s*->\s*\((.*?)\)(,?)/g,
     (_, reading, transition, eol) =>
       `"${reading.removeSpaces()}": "${transition.removeSpaces()}"${eol}`)
 
