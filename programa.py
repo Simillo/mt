@@ -1,71 +1,88 @@
 import fileinput
 import re
 from collections import defaultdict
+
+'''
+(Q, Σ, Γ, δ, q0)
+
+Q (Lista de estados)                    = STATES
+Σ (Alfabeto)                            = ALPHABET
+Γ (Alfabeto da fita (Σ ∪ B))            = TAPE_ALFABET
+δ (Dicionário de funções de transição)¹ = DELTA
+q0 (Estado inicial)                     = q0
+
+¹ δ está no formato de dicionário da seguinte maneira:
+{
+    'qi,x': 'qj,y,D'
+}
+'''
+
 STATES = []
 ALPHABET = []
 TAPE_ALPHABET = []
-M = defaultdict(list)
+DELTA = defaultdict(list)
 q0 = ''
-DECOMPOSITION = ''
 
-counter = 0
+TAPE = ''
+
+def line_to_list (line):
+    return line[1:-2].split(',')
+
 found_end_fn = False
-line_b4_eof = False
-for data in fileinput.input():
+for counter, data in enumerate(fileinput.input()):
     line = re.sub(r'[\t\s]', '', data)
+
     if (counter == 1):
-        STATES = line[1:-2].split(',')
+        STATES = line_to_list(line)
+        continue
     if (counter == 2):
-        ALPHABET = line[1:-2].split(',')
+        ALPHABET = line_to_list(line)
+        continue
     if (counter == 3):
-        TAPE_ALPHABET = line[1:-2].split(',')
+        TAPE_ALPHABET = line_to_list(line)
+        continue
 
     if counter > 3 and not found_end_fn and line != '{':
         if line == '}' and not found_end_fn:
             found_end_fn = True
         else:
             FN = re.sub(r'([\(\)]|,$)', '', line).split('->')
-            M[FN[0]] = FN[1]
+            DELTA[FN[0]] = FN[1]
+        continue
 
-    if found_end_fn and counter == len(M) + 6:
+    if found_end_fn and counter == len(DELTA) + 6:
         q0 = line
+        continue
 
-    if found_end_fn and counter == len(M) + 8:
-        DECOMPOSITION = line
-    counter = counter + 1
+    if found_end_fn and counter == len(DELTA) + 8:
+        TAPE = line
+        continue
 
-is_solved = False
-is_chomsky_dead = False
-
-original = DECOMPOSITION
-tape = q0 + original
-count = 0
-while not is_solved and not is_chomsky_dead:
-    print(tape)
-    transition = re.findall(r'.*\{(.*)\}(.).*', tape)
-    current_state = transition[0][0]
-    reading_symbol = transition[0][1]
+decomposition = q0 + TAPE
+while True:
+    print(decomposition)
+    transition = re.search(r'.*\{(.*)\}(.).*', decomposition).groups()
+    current_state = transition[0]
+    reading_symbol = transition[1]
     current_transition = current_state + ',' + reading_symbol
 
-    replacement = M[current_transition].split(',')
+    if current_transition not in DELTA:
+        break
+
+    replacement = DELTA[current_transition].split(',')
     next_state = '{' + replacement[0] +'}'
     write = replacement[1]
     move_to = replacement[2]
 
-    index = tape.find(current_state)
+    index = decomposition.find(current_state) - 1
 
-    tape = re.sub(r'\{.*?\}', '', tape)
-
-    index_end_left = index - 1
-    index_init_right = index - 1
-    L = ''
-    R = ''
+    decomposition = re.sub(r'\{.*?\}', '', decomposition)
 
     if (move_to == 'R'):
-        R = tape[index_init_right + 1:]
-        L = tape[:index_end_left] + write + next_state
+        R = decomposition[index + 1:]
+        L = decomposition[:index] + write + next_state
     else:
-        L = tape[:index_end_left - 1]
-        R = next_state+ tape[index_end_left - 1] + write + tape[index_init_right + 1:]
+        L = decomposition[:index - 1]
+        R = next_state + decomposition[index - 1] + write + decomposition[index + 1:]
         
-    tape = L + R
+    decomposition = L + R
