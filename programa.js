@@ -6,7 +6,7 @@ String.prototype.removeSpaces = function () {
 
 const listObjectsNames = ['states', 'alphabet', 'tapeAlphabet', 'q0'];
 
-const file = fs.readFileSync('./entrada.txt');
+const file = fs.readFileSync(process.argv[2]);
 const data = 
   file.toString('utf-8')
   .replace(/\{(.*?)\}/g, 
