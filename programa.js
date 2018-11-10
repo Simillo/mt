@@ -33,9 +33,30 @@ const data =
 
 const M = JSON.parse(data);
 let decomposition = `{${M.q0}}${M.tape}`;
-
 while(true) {
-  const transition = /.*\{(?<state>.*)\}(?<reading>.).*/.exec(decomposition).groups;
-  console.log(transition);
-  break;
+  console.log(decomposition);
+
+  const { state, reading } = /.*\{(?<state>.*)\}(?<reading>.).*/.exec(decomposition).groups;
+
+  const currentTransition = state + ',' + reading;
+  const replacement = M.delta[currentTransition];
+  if (!replacement) break;
+
+  let [nextState, write, moveTo] = replacement.split(',');
+  nextState = '{' + nextState + '}';
+  const index = decomposition.indexOf(state) - 1;
+  let R = L = '';
+
+  decomposition = decomposition.replace(/{.*}/, '');
+  const len = decomposition.length;
+
+  if (moveTo === 'R') {
+    R = decomposition.substring(index + 1, len);
+    L = decomposition.substring(0, index) + write + nextState;
+  } else {
+    L = decomposition.substring(0, index - 1);
+    R = nextState + decomposition[index - 1] + write + decomposition.substring(index + 1, len);
+  }
+
+  decomposition = L + R;
 }

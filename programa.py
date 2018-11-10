@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 
 '''
-(Q, Σ, Γ, δ, q0)
+M = (Q, Σ, Γ, δ, q0)
 
 Q (Lista de estados)                    = STATES
 Σ (Alfabeto)                            = ALPHABET
