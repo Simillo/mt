@@ -7,8 +7,8 @@ String.prototype.removeSpaces = function () {
 const listObjectsNames = ['states', 'alphabet', 'tapeAlphabet', 'q0'];
 
 const file = fs.readFileSync('./entrada.txt');
-const data = file.toString('utf-8');
-const str = data
+const data = 
+  file.toString('utf-8')
   .replace(/\{(.*?)\}/g, 
     (_, item) => 
       '[' +
@@ -24,11 +24,18 @@ const str = data
   .replace(/\[/g, 
     () =>
       `"${listObjectsNames.shift()}": [`)
-      
+
   .replace('}', '},')
   .replace(/\{/g, '"delta": {')
   .replace('(', '{')
   .replace(')', ',')
   .replace(/(B.*B$)/g, '"tape": "$1"}')
-console.log(JSON.parse(str));
-// console.log((str));
+
+const M = JSON.parse(data);
+let decomposition = `{${M.q0}}${M.tape}`;
+
+while(true) {
+  const transition = /.*\{(?<state>.*)\}(?<reading>.).*/.exec(decomposition).groups;
+  console.log(transition);
+  break;
+}
