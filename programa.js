@@ -15,15 +15,18 @@ const data =
       item
         .split(',')
         .map(match => `"${match.trim()}"`)
-        .join(',') + ']')
+        .join(',') + ']'
+  )
         
   .replace(/\((.*?)\)\s*->\s*\((.*?)\)(,?)/g,
     (_, reading, transition, eol) =>
-      `"${reading.removeSpaces()}": "${transition.removeSpaces()}"${eol}`)
+      `"${reading.removeSpaces()}": "${transition.removeSpaces()}"${eol}`
+  )
 
   .replace(/\[/g, 
     () =>
-      `"${listObjectsNames.shift()}": [`)
+      `"${listObjectsNames.shift()}": [`
+  )
 
   .replace('}', '},')
   .replace(/\{/g, '"delta": {')
