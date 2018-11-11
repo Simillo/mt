@@ -46,7 +46,7 @@ for counter, data in enumerate(fileinput.input()):
         if line == '}' and not found_end_fn:
             found_end_fn = True
         else:
-            FN = re.sub(r'([\(\)]|,$)', '', line).split('->')
+            FN = re.search(r'\((.*)\)->\((.*)\)', line).groups()
             DELTA[FN[0]] = FN[1]
         continue
 
@@ -57,7 +57,6 @@ for counter, data in enumerate(fileinput.input()):
     if found_end_fn and counter == len(DELTA) + 8:
         TAPE = line
         continue
-
 decomposition = q0 + TAPE
 while True:
     print(decomposition)
