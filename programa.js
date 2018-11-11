@@ -9,7 +9,7 @@ const listObjectsNames = ['states', 'alphabet', 'tapeAlphabet', 'q0'];
 const file = fs.readFileSync(process.argv[2]);
 const data = 
   file.toString('utf-8')
-  .replace(/\{(.*?)\}/g, 
+  .replace(/\{(.*)\}/g, 
     (_, item) => 
       '[' +
       item
@@ -18,7 +18,7 @@ const data =
         .join(',') + ']'
   )
         
-  .replace(/\((.*?)\)\s*->\s*\((.*?)\)(,?)/g,
+  .replace(/\((.*)\)\s*->\s*\((.*)\)(,?)/g,
     (_, reading, transition, eol) =>
       `"${reading.removeSpaces()}": "${transition.removeSpaces()}"${eol}`
   )
@@ -31,7 +31,7 @@ const data =
   .replace('}', '},')
   .replace(/\{/g, '"delta": {')
   .replace('(', '{')
-  .replace(')', ',')
+  .replace(/^\)/m, ',')
   .replace(/(B.*B$)/g, '"tape": "$1"}')
 
 const M = JSON.parse(data);
