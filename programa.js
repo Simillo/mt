@@ -76,7 +76,7 @@ const data =
 const M = JSON.parse(data);
 
 // Representação da fita a ser decomposta.
-let decomposition = `{${M.q0}}${M.tape}`;
+let decomposition = `{${M.q0[0]}}${M.tape}`;
 
 // Loop infinito (até não encontrar uma transição válida).
 while(true) {
