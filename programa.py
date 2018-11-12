@@ -75,7 +75,7 @@ while True:
 
     index = decomposition.find(current_state) - 1
 
-    decomposition = re.sub(r'\{.*?\}', '', decomposition)
+    decomposition = re.sub(r'\{.*\}', '', decomposition)
 
     if (move_to == 'R'):
         R = decomposition[index + 1:]

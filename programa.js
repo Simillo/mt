@@ -9,7 +9,7 @@ String.prototype.removeSpaces = function () {
 // Definindo uma lista de propriedades para o objeto final que representa a Máquina de turing.
 const listObjectsNames = ['states', 'alphabet', 'tapeAlphabet', 'q0'];
 
-/*
+/**
  *Lê o arquivo passado pelos args do CLI.
  * Formato: node programa.js entrada.txt
  */ 
