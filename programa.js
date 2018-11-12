@@ -28,7 +28,7 @@ const data =
    * Para toda ocorrência do estilo: {.*} transformar em [.*].
    * Exemplo: {q0, q1, q2} para ["q0", "q1", "q2"]
    */
-  .replace(/\{(.*)\}/g, 
+  .replace(/\{(.*)\}/gm, 
     (_, item) => 
       '[' +
       item
@@ -42,21 +42,21 @@ const data =
    * onde o domínio é uma propriedade do objeto a imagem e seu valor.
    * Exemplo: (q0, B) -> (q1, B, R) para "q0,B": "q1,B,R"
    */
-  .replace(/\((.*)\)\s*->\s*\((.*)\)(,?)/g,
+  .replace(/\((.*)\)\s*->\s*\((.*)\)(,?)/gm,
     (_, reading, transition, eol) =>
       `"${reading.removeSpaces()}": "${transition.removeSpaces()}"${eol}`
   )
 
   //Faz alterações finais na estrutura do arquivo (trocar "(" e ")" por "{" e "}" respectivamente, por exemplo).
-  .replace(/\[/g, 
+  .replace(/\[/gm, 
     () =>
       `"${listObjectsNames.shift()}": [`
   )
   .replace('}', '},')
-  .replace(/\{/g, '"delta": {')
+  .replace('{', '"delta": {')
   .replace('(', '{')
-  .replace(/^\)/m, ',')
-  .replace(/(B.*B$)/g, '"tape": "$1"}')
+  .replace(/\)$/m, ',')
+  .replace(/(B.*B$)/g, '"tape": "$1"}');
 
 /**
  * Faz o parser final da string representando o arquivo em um objeto JSON válido.
