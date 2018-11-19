@@ -111,18 +111,22 @@ for counter, data in enumerate(fileinput.input()):
 # Representa a fita a ser decomposta no formato "{qi}B...B"
 decomposition = q0 + TAPE
 while True:
-	# Imprimindo a decomposição da fita no terminal cada iteração.
+    # Imprimindo a decomposição da fita no terminal cada iteração.
     print(decomposition)
+    # Busca na fita a transição atual atribuindo a dois grupos onde o primeiro é o estado atual e o segundo é o símbolo sendo lido.
     transition = re.search(r'.*\{(.*)\}(.).*', decomposition).groups()
+    # Atribuindo os grupos encontrados.
     current_state = transition[0]
     reading_symbol = transition[1]
+    # Monta uma string no formato "qi,x" válido para uma solução O(1) no dicionário de funções de transição.
     current_transition = current_state + ',' + reading_symbol
-
+ 
     if current_transition not in DELTA:
         break
-
+ 
     replacement = DELTA[current_transition].split(',')
     next_state = '{' + replacement[0] +'}'
+
     write = replacement[1]
     move_to = replacement[2]
 
