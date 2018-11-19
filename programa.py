@@ -16,36 +16,75 @@ q0 (Estado inicial)                     = q0
     'qi,x': 'qj,y,D'
 }
 '''
-
+# Lista representando estados da máquina M.
 STATES = []
+# Lista representando o Alfabeto (Σ - B).
 ALPHABET = []
+# Lista representando o Alfabeto da Fita (Σ ∪ B).
 TAPE_ALPHABET = []
+# Objeto (dicionário) representando o conjunto de estados de transição.
 DELTA = defaultdict(list)
+# Estado inicial.
 q0 = ''
-
+# Fita.
 TAPE = ''
 
+# Método auxiliar para trasnformar um string no formato "{.+}" em uma lista. 
 def line_to_list (line):
     return line[1:-2].split(',')
 
+# Variável auxiliar para identificar se terminou de montar o objeto de funções de transição.
 found_end_fn = False
+
+# Iterador para cara linha do arquivo de entrada.
 for counter, data in enumerate(fileinput.input()):
+
+	# Variável representando a linha atual sendo lida do arquivo. Obs.: Expressão regular para remover os espaços (\s) e os tabs (\t).
     line = re.sub(r'[\t\s]', '', data)
 
+	# Quando for a primeira (significante, ignorando o '(' inicial) linha.
     if (counter == 1):
+		''' 
+		Atribui a lista de estados os estados a linha.
+		Ex: {q0, q1, ..., qn},
+		e a variável STATES será composta por: ['q1', 'q2', ..., 'qn']
+		'''
         STATES = line_to_list(line)
         continue
-    if (counter == 2):
+	# Quando for a segunda (significante, ignorando o '(' inicial) linha.
+	if (counter == 2):
+		'''
+		Atribui a lista de alfabeto os símbolos pertencentes linha sendo lida.
+		Ex: {1, X, Y},
+		e a variável ALPHABET será composta por: ['1', 'X', 'Y']
+		'''
         ALPHABET = line_to_list(line)
         continue
-    if (counter == 3):
+    # Quando for a terceira (significante, ignorando o '(' inicial) linha.
+	if (counter == 3):
+		'''
+		Atribui a lista de alfabeto da fita os símbolos pertencentes linha sendo lida.
+		Ex: {1, X, Y, B},
+		e a variável TAPE_ALPHABET será composta por: ['1', 'X', 'Y', 'B']
+		'''
         TAPE_ALPHABET = line_to_list(line)
         continue
-
+	# Quando terminou de lê as linhas que contêm os estados, alfabeto e alfabeto da fita, começará a preencher o dicionário de funções de transição.
     if counter > 3 and not found_end_fn and line != '{':
+		# Se terminar de ler as funções de transições, a flag que encontrou tudo será verdade.
         if line == '}' and not found_end_fn:
             found_end_fn = True
         else:
+			'''
+			Expressão regular para achar uma linha (que indica uma função de transição) pertencente a linguagem.
+			A linha deve está no formato: (qi,y) -> (qj,x,D),
+			onde:
+				qi = estado atual;
+				qj = estado destino;
+				y  = símbolo sendo lido;
+				x  = símbolo s ser escrito;
+				D  = direção da cabeça de leitura (Obs.: A Máquina de Turing é padrão, ou seja, sem movimento estático).
+			'''
             FN = re.search(r'\((.*)\)->\((.*)\)', line).groups()
             DELTA[FN[0]] = FN[1]
         continue
