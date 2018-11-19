@@ -83,21 +83,35 @@ for counter, data in enumerate(fileinput.input()):
 				qj = estado destino;
 				y  = símbolo sendo lido;
 				x  = símbolo s ser escrito;
-				D  = direção da cabeça de leitura (Obs.: A Máquina de Turing é padrão, ou seja, sem movimento estático).
+				D  = L (left) ou R (right) direção da cabeça de leitura (Obs.: A Máquina de Turing é padrão, ou seja, sem movimento estático).
+
+			O resultado da expressão da função retorna uma lista de grupos achados onde
+			o primeiro item da lista é o estado e o símbolo lidos "(qi,x)" 
+			e o segundo a o estado destino, símbolo escrito e direção da fita "(qj,y,D)"
 			'''
             FN = re.search(r'\((.*)\)->\((.*)\)', line).groups()
+
+			'''
+			Monta o dicionário no formato:
+			{
+			    'qi,x': 'qj,y,D'
+			}
+			'''
             DELTA[FN[0]] = FN[1]
         continue
-
+	# Terminou de ler as funções de transição, então a próxima linha reprensenta o estado inicial.
     if found_end_fn and counter == len(DELTA) + 6:
         q0 = line
         continue
-
+	# Leu o estado inicial, então a próxima linha representa a fita.
     if found_end_fn and counter == len(DELTA) + 8:
         TAPE = line
         continue
+
+# Representa a fita a ser decomposta no formato "{qi}B...B"
 decomposition = q0 + TAPE
 while True:
+	# Imprimindo a decomposição da fita no terminal cada iteração.
     print(decomposition)
     transition = re.search(r'.*\{(.*)\}(.).*', decomposition).groups()
     current_state = transition[0]
