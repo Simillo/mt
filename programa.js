@@ -13,7 +13,7 @@ const listObjectsNames = ['states', 'alphabet', 'tapeAlphabet', 'q0'];
  *Lê o arquivo passado pelos args do CLI.
  * Formato: node programa.js entrada.txt
  */ 
-const file = fs.readFileSync(process.argv[2]);
+const file = fs.readFileSync(process.argv[2]).toString('utf-8');
 
 // Realizando o parser do arquivo.
 const data = 
@@ -22,7 +22,7 @@ const data =
    * Converte os chunks (em ASCII) para UTF-8.
    * Transforma o conteúdo do arquivo em um arquivo JSON válido. 
    */
-  file.toString('utf-8')
+  file
   
   /**
    * Para toda ocorrência do estilo: {.*} transformar em [.*].
@@ -73,7 +73,13 @@ const data =
  *     'qi,x': 'qj,y,D'
  * }
  */
-const M = JSON.parse(data);
+let M = {};
+try {
+  M = JSON.parse(data);
+} catch (ex) {
+  console.log('A linguagem não pertence a máquina.');
+  process.exit(1);
+}
 
 // Representação da fita a ser decomposta.
 let decomposition = `{${M.q0[0]}}${M.tape}`;
